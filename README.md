@@ -33,10 +33,8 @@ If you just want the feature:
 All required files are created automatically on the printer.
 
 Detailed step-by-step instructions can be found here:
-
-```
 [copy-paste/README.md](https://github.com/TinkerBarn/Snapmaker-U1-improvements/blob/550514ec841a3afe5723382e686b4d8fde89f795/copy-paste/README.md)
-```
+
 
 ---
 
