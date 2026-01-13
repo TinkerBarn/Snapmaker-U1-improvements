@@ -6,70 +6,78 @@
 
 ---
 
-## 🚀 Quick Install (Copy & Paste)
+## What this repository is about
 
-⚠️ **NOT included in stock Snapmaker U1 firmware**
+This repository provides a **persistent UI modification** for the **Snapmaker U1 running Fluidd**.
 
-This modification **requires the Paxx12 Snapmaker U1 Extended Firmware**,  
-because SSH access, persistence and the Remote Screen feature are not available in stock firmware.
+It focuses on two goals:
 
-### Prerequisites
-- Paxx12 Snapmaker U1 Extended Firmware  
-  https://github.com/paxx12/SnapmakerU1-Extended-Firmware
-- SSH access as `root`
-- Remote Screen enabled  
-  https://github.com/paxx12/SnapmakerU1-Extended-Firmware/blob/main/docs/remote_screen.md
+- **Easy installation for beginners** (one copy & paste via SSH)
+- **Full transparency for advanced users** (documented file system layout and source files)
 
-### Step 1 – Enable persistence for `/etc` (run once)
-```sh
-touch /oem/.debug
-```
-
-📄 Documentation:  
-https://github.com/paxx12/SnapmakerU1-Extended-Firmware/blob/v1.0.0-paxx12-10/docs/data_persistence.md
-
-### Step 2 – Install UI tweak
-- Open the file below
-- Copy **everything**
-- Paste it into your SSH session (root)
-
-```
-copy-paste/chamber-light-remote-display.txt
-```
-
-### Step 3 – Reload & test
-- Reload Fluidd in Web browser (http://<Snapmaker U1 IP address>): **Ctrl + F5**
-- Power off / on the Snapmaker U1
-
-✅ After reboot, the changes should still be active.
+You do **not** need to understand the internal files to use this tweak.
 
 ---
 
-## ⚠️⚠️ IMPORTANT – Firmware Upgrade Warning ⚠️⚠️
+## For beginners 🚀 (recommended)
 
-> **READ THIS BEFORE UPGRADING OR FLASHING FIRMWARE**
+If you just want the feature:
 
-When `/oem/.debug` exists, **changes to `/etc` are persistent**.  
-This includes files installed by this repository.
+- **Use the `copy-paste/` folder**
+- Copy **one single script**
+- Paste it into an SSH session
+- Done
 
-### BEFORE flashing or upgrading firmware:
-```sh
-rm /oem/.debug
+➡️ **No Git, no file copying, no manual editing required**
+
+All required files are created automatically on the printer.
+
+Detailed step-by-step instructions can be found here:
+
 ```
-
-Failing to do this **may cause firmware upgrades to fail or behave unexpectedly**.
-
-After a successful firmware upgrade, you can re-enable persistence again:
-```sh
-touch /oem/.debug
+copy-paste/README.md
 ```
-
-📄 Official documentation:  
-https://github.com/paxx12/SnapmakerU1-Extended-Firmware/blob/v1.0.0-paxx12-10/docs/data_persistence.md
 
 ---
 
-## What this tweak does
+## For advanced users / documentation 🔧
+
+The folder below documents **exactly which files are created on the printer** and **where they are stored**:
+
+```
+filesystem/
+```
+
+This folder mirrors the real Snapmaker U1 file system paths, for example:
+
+- `/etc/init.d/S99u1-ui-tweaks`
+- `/home/lava/printer_data/misc/u1-ui-tweaks/custom.js`
+- `/home/lava/printer_data/misc/u1-ui-tweaks/custom.css`
+
+➡️ These files are **automatically created** when you use the copy & paste installer.  
+➡️ Nothing inside `filesystem/` needs to be copied manually.
+
+---
+
+## ⚠️ Not stock firmware – prerequisites
+
+This tweak **does NOT work with the stock Snapmaker U1 firmware**.
+
+It requires the **Paxx12 Snapmaker U1 Extended Firmware**, which provides:
+
+- SSH access
+- Persistent storage
+- Remote Screen feature
+
+Documentation and downloads:
+https://github.com/paxx12/SnapmakerU1-Extended-Firmware
+
+Remote Screen feature:
+https://github.com/paxx12/SnapmakerU1-Extended-Firmware/blob/main/docs/remote_screen.md
+
+---
+
+## What the tweak does
 
 - **Toolchanger UI**
   - Shows only **T0–T3**
@@ -83,49 +91,13 @@ https://github.com/paxx12/SnapmakerU1-Extended-Firmware/blob/v1.0.0-paxx12-10/do
 
 - **Persistent**
   - Survives reboots and power cycles
-  - Uses an init.d boot hook
+  - Uses a late `init.d` boot hook
 
 ---
 
-## Repository layout
+## Screenshots
 
-This repository mirrors the **real Snapmaker U1 filesystem paths**.
-
-```
-filesystem/
-├─ etc/init.d/S99u1-ui-tweaks
-├─ oem/.debug
-└─ home/lava/printer_data/misc/u1-ui-tweaks/
-   ├─ custom.css
-   ├─ custom.js
-   └─ install.sh
-
-copy-paste/
-└─ chamber-light-remote-display.txt
-```
-
-### filesystem/
-Contains the **source of truth** – exact files and paths written to the printer.
-
-### copy-paste/
-Contains a **one-block installer** for easy SSH installation.  
-This is only a convenience wrapper around the files in `filesystem/`.
-
----
-
-## How it works (boot behavior)
-
-On every boot:
-
-1. `/etc/init.d/S99u1-ui-tweaks` runs late in the startup process
-2. It waits until Fluidd is available
-3. Executes:
-   ```
-   /home/lava/printer_data/misc/u1-ui-tweaks/install.sh
-   ```
-4. `install.sh` copies UI files into `/home/lava/fluidd/` and patches `index.html`
-
-This is required because **Fluidd is recreated on every reboot**.
+*(Add before / after screenshots here)*
 
 ---
 
