@@ -94,6 +94,9 @@ https://github.com/paxx12/SnapmakerU1-Extended-Firmware/blob/main/docs/remote_sc
 ---
 
 ## Screenshots
+- Main Menu
+
+![Main Menu](screenshots/Main%20Menu%20v1.0.0.png)
 
 *(Add before / after screenshots here)*
 
