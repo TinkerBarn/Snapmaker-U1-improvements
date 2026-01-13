@@ -102,7 +102,7 @@ Chamber light button and remote screen button under camera streams
 ![Improved fliudd](screenshots/fluidd02.png)
 
 - Remote screen in browser
-![Remote screen](screenshots/Fluidd03.png)
+![Remote screen](screenshots/fluidd03.png)
 
 ---
 
