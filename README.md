@@ -38,7 +38,7 @@ copy-paste/chamber-light-remote-display.txt
 ```
 
 ### Step 3 – Reload & test
-- Reload Fluidd: **Ctrl + F5**
+- Reload Fluidd in Web browser (http://<Snapmaker U1 IP address>): **Ctrl + F5**
 - Power off / on the Snapmaker U1
 
 ✅ After reboot, the changes should still be active.
