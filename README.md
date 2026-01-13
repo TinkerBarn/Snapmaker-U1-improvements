@@ -95,13 +95,16 @@ https://github.com/paxx12/SnapmakerU1-Extended-Firmware/blob/main/docs/remote_sc
 
 ## Screenshots
 - Standard fluidd view with 32 Tool heads
+
 ![Standard](screenshots/fluidd01.png)
 
 - Improved fluidd view with 4 Tool heads,
 Chamber light button and remote screen button under camera streams
+
 ![Improved fliudd](screenshots/fluidd02.png)
 
 - Remote screen in browser
+
 ![Remote screen](screenshots/fluidd03.png)
 
 ---
