@@ -1,0 +1,61 @@
+/* =========================================================
+   Snapmaker U1 / Fluidd - UI Tweaks (persistent)
+   - Toolchanger: show only T0–T3
+   - Cameras card: add Chamber light + Remote Display buttons
+   ========================================================= */
+
+/* Hide all toolchanger rows except the first one */
+.row:has(.app-toolchanger-control) > .col.col-12:not(:first-of-type) {
+  display: none !important;
+}
+
+/* In the first toolchanger row, hide buttons from T4 onward */
+.row:has(.app-toolchanger-control) > .col.col-12:first-of-type
+  .app-toolchanger-control button.v-btn:nth-of-type(n+5) {
+  display: none !important;
+}
+
+/* Shared row behavior */
+.u1-led-row,
+.u1-led-btn,
+.u1-led-btn *,
+.u1-remote-btn,
+.u1-remote-btn * {
+  pointer-events: auto !important;
+  user-select: none !important;
+}
+
+/* Chamber light button */
+.u1-led-btn {
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  line-height: 0;
+  color: #9aa0a6;
+}
+
+.u1-led-btn.is-off svg { opacity: 0.45; }
+
+.u1-led-btn.is-on {
+  color: #ffcc33;
+}
+
+.u1-led-btn.is-on svg {
+  opacity: 1;
+  filter: drop-shadow(0 0 5px rgba(255, 204, 51, 0.55));
+}
+
+/* Remote display button */
+.u1-remote-btn {
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  line-height: 0;
+  color: #9aa0a6;
+}
+
+.u1-remote-btn:hover svg {
+  opacity: 0.9;
+}

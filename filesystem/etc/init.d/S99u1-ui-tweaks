@@ -1,0 +1,32 @@
+#!/bin/sh
+# Snapmaker U1 / Fluidd UI Tweaks
+# - runs late in boot
+# - never blocks boot
+
+PERSIST_DIR="/home/lava/printer_data/misc/u1-ui-tweaks"
+INSTALL_SH="$PERSIST_DIR/install.sh"
+FLUIDD_INDEX="/home/lava/fluidd/index.html"
+LOG_FILE="$PERSIST_DIR/boot.log"
+
+wait_for_index() {
+  i=0
+  while [ $i -lt 10 ]; do
+    [ -f "$FLUIDD_INDEX" ] && return 0
+    i=$((i + 1))
+    sleep 1
+  done
+  return 1
+}
+
+case "${1:-start}" in
+  start)
+    mkdir -p "$PERSIST_DIR" 2>/dev/null || true
+    if [ -x "$INSTALL_SH" ] && wait_for_index; then
+      "$INSTALL_SH" >> "$LOG_FILE" 2>&1 || true
+    fi
+    exit 0
+    ;;
+  *)
+    exit 0
+    ;;
+esac
