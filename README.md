@@ -19,7 +19,7 @@ You do **not** need to understand the internal files to use this tweak.
 
 ---
 
-## For beginners 🚀 (recommended)
+## For beginners (recommended)
 
 If you just want the feature:
 
