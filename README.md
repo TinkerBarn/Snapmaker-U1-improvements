@@ -33,7 +33,7 @@ If you just want the feature:
 All required files are created automatically on the printer.
 
 Detailed step-by-step instructions can be found here:
-[copy-paste/README.md](https://github.com/TinkerBarn/Snapmaker-U1-improvements/blob/main/copy-paste/README.md)
+[copy-paste/README.md](https://github.com/TinkerBarn/Snapmaker-U1-improvements/blob/main/copy-paste)
 
 
 ---
