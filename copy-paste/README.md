@@ -57,7 +57,7 @@ Adds **three buttons** to the Fluidd *Cameras* card:
 ### Installer file
 
 ```
-chamber-light-remote-display-firmware-config.txt
+chamber-light_remote-display_firmware-config
 ```
 
 ---
