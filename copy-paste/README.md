@@ -30,7 +30,7 @@ Adds two buttons to the Fluidd *Cameras* card:
 ### Installer file
 
 ```
-chamber-light-remote-display.txt
+chamber-light_remote-display
 ```
 
 ---
