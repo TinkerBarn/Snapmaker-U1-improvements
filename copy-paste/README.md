@@ -13,43 +13,17 @@ Choose the one that matches your firmware and requirements.
 
 ---
 
-## Variant A – Chamber Light + Remote Screen (stable)
-
-✅ **Recommended for most users**
-
-Adds two buttons to the Fluidd *Cameras* card:
-
-- **Chamber light** (toggle)
-- **Remote Screen** (opens `/screen/` in a new tab)
-
-### Requirements
-
-- Paxx12 Snapmaker U1 Extended Firmware (stable releases supported)
-- SSH access as `root`
-
-### Installer file
-
-```
-chamber-light_remote-display
-```
-
----
-
-## Variant B – Chamber Light + Remote Screen + Firmware Config
-
-🧪 **Advanced / Developer version**
+## Chamber Light + Remote Screen + Firmware Config
 
 Adds **three buttons** to the Fluidd *Cameras* card:
 
-- **Chamber light**
-- **Remote Screen**
+- **Chamber light** (bulb icon → LED ON/OFF)
+- **Remote Screen** (screen icon → `/screen/`)
 - **Firmware Config** (gear icon → `/firmware-config/`)
-
-⚠️ This button links to the internal firmware configuration UI and therefore **requires a newer firmware build**.
 
 ### Requirements
 
-- **Paxx12 Snapmaker U1 Extended Firmware – devel build v1.1.0 or newer**
+- **Paxx12 Snapmaker U1 Extended Firmware v1.1.0 or newer**
 - SSH access as `root`
 
 ❌ This variant will **NOT work** on older firmware versions.
