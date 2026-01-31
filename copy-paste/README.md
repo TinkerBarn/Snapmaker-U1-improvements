@@ -6,14 +6,7 @@ This installer requires the **Paxx12 Snapmaker U1 Extended Firmware**.
 
 ---
 
-## Available installer variants
-
-There are **two different Copy & Paste installers** available.  
-Choose the one that matches your firmware and requirements.
-
----
-
-## Chamber Light + Remote Screen + Firmware Config
+## Copy & Paste installer for Chamber Light + Remote Screen + Firmware Config 
 
 Adds **three buttons** to the Fluidd *Cameras* card:
 
