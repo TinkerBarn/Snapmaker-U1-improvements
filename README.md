@@ -77,6 +77,8 @@ https://github.com/paxx12/SnapmakerU1-Extended-Firmware/blob/main/docs/remote_sc
 
 ## What the tweak does
 
+**Variante A:**
+
 - **Toolchanger UI**
   - Shows only **T0–T3**
   - Hides unused toolheads **T4–T31**
@@ -86,6 +88,8 @@ https://github.com/paxx12/SnapmakerU1-Extended-Firmware/blob/main/docs/remote_sc
     (controls LED: `cavity_led`)
   - Adds **Remote Display** button  
     Opens: `http://<printer-ip>/screen/`
+  - Adds **Firmware Config** gear icon
+    Opens: `http://<printer-ip>/firmare-config/`
 
 - **Persistent**
   - Survives reboots and power cycles
