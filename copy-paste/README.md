@@ -8,7 +8,7 @@ This installer requires the **Paxx12 Snapmaker U1 Extended Firmware**.
 
 ## Copy & Paste installer for Chamber Light + Top Cover Light + Remote Screen + Firmware Config 
 
-Choose the file with the buttons you'll add. See Variante A, B or C in the main Readme
+Choose the file with the buttons you'll add. See Variante A, B or C in the [main Readme](https://github.com/TinkerBarn/Snapmaker-U1-improvements/tree/main)
 
 Adds up to **four buttons** to the Fluidd *Cameras* card:
 
