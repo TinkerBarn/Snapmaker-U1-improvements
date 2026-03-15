@@ -30,7 +30,9 @@ Adds up to **four buttons** to the Fluidd *Cameras* card:
 ### Installer file
 
 ```
+chamber-light_remote-display
 chamber-light_remote-display_firmware-config
+chamber-light_top-cover-light_remote-display_firmware-config
 ```
 
 ---
