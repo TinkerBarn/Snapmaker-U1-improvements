@@ -6,11 +6,14 @@ This installer requires the **Paxx12 Snapmaker U1 Extended Firmware**.
 
 ---
 
-## Copy & Paste installer for Chamber Light + Remote Screen + Firmware Config 
+## Copy & Paste installer for Chamber Light + Top Cover Light + Remote Screen + Firmware Config 
 
-Adds **three buttons** to the Fluidd *Cameras* card:
+Choose the file with the buttons you'll add. See Variante A, B or C in the main Readme
+
+Adds up to **four buttons** to the Fluidd *Cameras* card:
 
 - **Chamber light** (bulb icon → LED ON/OFF)
+- **Top Cover light** (bulb icon → LED ON/OFF)
 - **Remote Screen** (screen icon → `/screen/`)
 - **Firmware Config** (gear icon → `/firmware-config/`)
 
@@ -20,6 +23,9 @@ Adds **three buttons** to the Fluidd *Cameras* card:
 - SSH access as `root`
 
 ❌ This variant will **NOT work** on older firmware versions.
+
+- **Top cover light needs changes in printer.cfg and additional gcode macros**
+- See description in Fluidd Readme
 
 ### Installer file
 
