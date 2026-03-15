@@ -95,6 +95,28 @@ https://github.com/paxx12/SnapmakerU1-Extended-Firmware/blob/main/docs/remote_sc
   - Survives reboots and power cycles
   - Uses a late `init.d` boot hook
 
+  **Variante B:**
+
+- **All features from Variante A**
+  - Shows only **T0–T3**
+  - Hides unused toolheads **T4–T31**
+  - Adds **Chamber light** ON/OFF button  
+
+- **Additional in Cameras card**
+  - Adds **Firmware Config** gear icon
+    Opens: `http://<printer-ip>/firmare-config/`
+
+ **Variante C:**
+
+- **All features from Variante B**
+  - Shows only **T0–T3**
+  - Hides unused toolheads **T4–T31**
+  - Adds **Chamber light** ON/OFF button
+  - Adds **Firmware Config** gear icon 
+
+- **Additional in Cameras card**
+  - Adds **Top Cover LED** ON/OFF button
+    **Note: Needs additional changes in Fluidd**
 ---
 
 ## Screenshots
