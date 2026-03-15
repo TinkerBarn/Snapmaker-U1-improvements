@@ -88,8 +88,6 @@ https://github.com/paxx12/SnapmakerU1-Extended-Firmware/blob/main/docs/remote_sc
     (controls LED: `cavity_led`)
   - Adds **Remote Display** button  
     Opens: `http://<printer-ip>/screen/`
-  - Adds **Firmware Config** gear icon
-    Opens: `http://<printer-ip>/firmare-config/`
 
 - **Persistent**
   - Survives reboots and power cycles
