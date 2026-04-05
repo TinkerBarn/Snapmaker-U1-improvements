@@ -115,6 +115,9 @@ https://github.com/paxx12/SnapmakerU1-Extended-Firmware/blob/main/docs/remote_sc
 - **Additional in Cameras card**
   - Adds **Top Cover LED** ON/OFF button
     **Note: Needs additional [changes in Fluidd](https://github.com/TinkerBarn/Snapmaker-U1-improvements/tree/main/Fluidd)**
+
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/H2H41XBKJ6)
 ---
 
 ## Screenshots
