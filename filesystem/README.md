@@ -1,19 +1,31 @@
-# filesystem/
+# Filesystem reference
 
-This folder mirrors the **real Snapmaker U1 filesystem paths** used by this tweak.
+Most users do not need this folder.
 
-## Paths
+It shows where the Copy & Paste installer stores files on the printer. This is useful if you want to understand or review the installation, but it is not required for normal use.
 
-- `/etc/init.d/S99u1-ui-tweaks`  
-  Boot-time hook that waits for Fluidd and then executes:
-  `/home/lava/printer_data/misc/u1-ui-tweaks/install.sh`
+---
 
-- `/home/lava/printer_data/misc/u1-ui-tweaks/`  
-  Persistent folder (survives reboots), containing:
-  - `custom.css`
-  - `custom.js`
-  - `install.sh`
+## Beginner note
 
-- `/oem/.debug`  
-  When this file exists, the firmware will persist changes to `/etc`.  
-  The file in this repo is only a placeholder to show the path.
+If you only want to install the tweaks, go back to:
+
+```text
+copy-paste/README.md
+```
+
+You do not need to copy anything from this `filesystem/` folder manually.
+
+---
+
+## What this folder represents
+
+The folder mirrors printer paths such as:
+
+- `/etc/init.d/S99u1-ui-tweaks`
+- `/home/lava/printer_data/misc/u1-ui-tweaks/`
+- `/oem/.debug`
+
+These paths exist on the printer, not on your normal computer.
+
+The Copy & Paste installer creates or updates the needed files automatically.

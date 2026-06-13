@@ -6,8 +6,11 @@
 # - /etc/init.d/S99u1-ui-tweaks
 # - /home/lava/printer_data/misc/u1-ui-tweaks/* (custom.css/custom.js/install.sh)
 #
-# Prerequisite for persistence of /etc:
+# The installer enables persistence for /etc automatically:
 #   touch /oem/.debug
+
+mkdir -p /oem
+touch /oem/.debug
 
 mkdir -p /home/lava/printer_data/misc/u1-ui-tweaks
 
@@ -433,10 +436,104 @@ EOF
 
 chmod +x /etc/init.d/S99u1-ui-tweaks
 
+if [ -f /home/lava/printer_data/config/printer.cfg ]; then
+  CONFIG_DIR="/home/lava/printer_data/config"
+elif [ -f /oem/printer_data/config/printer.cfg ]; then
+  CONFIG_DIR="/oem/printer_data/config"
+else
+  CONFIG_DIR="/home/lava/printer_data/config"
+fi
+
+PRINTER_CFG="$CONFIG_DIR/printer.cfg"
+EXTENDED_DIR="$CONFIG_DIR/extended"
+
+if [ -f "$PRINTER_CFG" ]; then
+  mkdir -p "$EXTENDED_DIR"
+
+  cat << 'EOF' > "$EXTENDED_DIR/ext_printer.cfg"
+[output_pin TOP_COVER_24V]
+pin: PE15
+value: 0
+shutdown_value: 0
+
+[gcode_macro TOP_COVER_LED_TOGGLE]
+description: Toggles the Top Cover 24V pin on/off
+gcode:
+  {% if printer["output_pin TOP_COVER_24V"].value == 1 %}
+    SET_PIN PIN=TOP_COVER_24V VALUE=0
+    {action_respond_info("Top Cover: OFF")}
+  {% else %}
+    SET_PIN PIN=TOP_COVER_24V VALUE=1
+    {action_respond_info("Top Cover: ON")}
+  {% endif %}
+
+[gcode_macro TOP_COVER_LED_ON]
+description: Switch the Top Cover 24V pin on
+gcode:
+  SET_PIN PIN=TOP_COVER_24V VALUE=1
+
+[gcode_macro TOP_COVER_LED_OFF]
+description: Switch the Top Cover 24V pin off
+gcode:
+  SET_PIN PIN=TOP_COVER_24V VALUE=0
+EOF
+
+  cat << 'EOF' > "$EXTENDED_DIR/ext_rfidmacros.cfg"
+[gcode_macro Filament_Update]
+description: Read RFID Filament tag (OpenRFID)
+gcode:
+    {% set s = params.S|default(0)|int %}
+    FILAMENT_DT_UPDATE CHANNEL={s}
+
+[gcode_macro Filament_Delete]
+description: Delete RFID Filament information (OpenRFID)
+gcode:
+    {% set s = params.S|default(0)|int %}
+    FILAMENT_DT_CANCLE CHANNEL={s}
+
+[gcode_macro Filament_Information]
+description: Show RFID Filament tag information (OpenRFID)
+gcode:
+    {% set s = params.S|default(0)|int %}
+    FILAMENT_DT_QUERY CHANNEL={s}
+EOF
+
+  if [ ! -f "$PRINTER_CFG.u1-tweaks.bak" ]; then
+    cp "$PRINTER_CFG" "$PRINTER_CFG.u1-tweaks.bak"
+  fi
+
+  grep -q '^\[include extended/ext_printer.cfg\]' "$PRINTER_CFG" || \
+    sed -i '1i[include extended/ext_printer.cfg]' "$PRINTER_CFG"
+
+  grep -q '^\[include extended/ext_rfidmacros.cfg\]' "$PRINTER_CFG" || \
+    sed -i '1i[include extended/ext_rfidmacros.cfg]' "$PRINTER_CFG"
+
+  awk '
+    /^\[purifier\]/ { in_purifier=1; print; next }
+    /^\[/ && in_purifier { in_purifier=0 }
+    in_purifier && /^[[:space:]]*(enable_pin|power_enable_pin):[[:space:]]*PE15[[:space:]]*$/ {
+      print "# " $0
+      next
+    }
+    { print }
+  ' "$PRINTER_CFG" > "$PRINTER_CFG.tmp" && mv "$PRINTER_CFG.tmp" "$PRINTER_CFG"
+
+  echo "✅ Fluidd/Klipper config updated:"
+  echo "   - created extended/ext_printer.cfg"
+  echo "   - created extended/ext_rfidmacros.cfg"
+  echo "   - added include lines to printer.cfg if missing"
+  echo "   - commented enable_pin/power_enable_pin: PE15 in [purifier] if present"
+else
+  echo "⚠️ printer.cfg not found at $PRINTER_CFG"
+  echo "   UI tweaks were installed, but Top Cover LED config was not patched."
+fi
+
 # Apply once now (no reboot required)
 /home/lava/printer_data/misc/u1-ui-tweaks/install.sh
 
 echo ""
 echo "✅ Installed."
 echo "➡️ Reload Fluidd with: Ctrl + F5"
-echo "➡️ Reboot test: reboot"
+echo "➡️ Now reboot the printer to verify persistence:"
+echo "   Type: reboot"
+echo "   Then press Enter and confirm the reboot if asked."

@@ -1,93 +1,29 @@
-# u1-ui-tweaks (on-printer folder)
+# On-printer UI tweak files
 
-This folder is created on the printer at:
+This folder documents files that are created on the printer by the Copy & Paste installer.
 
-```
+Most users do not need to open or edit these files.
+
+---
+
+## What these files are for
+
+The installer stores the Fluidd UI tweaks in this printer folder:
+
+```text
 /home/lava/printer_data/misc/u1-ui-tweaks/
 ```
 
-It persists across reboots (`printer_data` is persistent even without `/oem/.debug`).
+The files in this folder are used to add the buttons and small layout changes to Fluidd.
 
 ---
 
-## Available versions
+## For normal installation
 
-There are **two supported versions** of the UI tweaks.  
-Choose the one that matches your installed firmware.
+Use the installer files in:
 
----
-
-## Version A – Chamber Light + Remote Screen (stable)
-
-✅ **Default / stable version**
-
-### Minimum firmware requirement
-
-- **Paxx12 Snapmaker U1 Extended Firmware v1.0.0 or newer**
-
-### Files
-
-- `custom.js`
-- `custom.css`
-
-### Features
-
-Injects **two rows** under the *Cameras* card in Fluidd:
-
-- **Chamber light toggle**  
-  Sends  
-  ```
-  SET_LED LED=cavity_led WHITE=0/1
-  ```
-- **Remote Screen button**  
-  Opens `/screen/` based on the current Fluidd host
-
----
-
-## Version B – Chamber Light + Remote Screen + Firmware Config
-
-🧪 **Developer / devel build version**
-
-Adds an additional **Firmware Config** button (gear icon).
-
-### Minimum firmware requirement
-
-- **Paxx12 Snapmaker U1 Extended Firmware – devel build v1.1.0 or newer**
-
-⚠️ This version will **NOT work** on older firmware builds.
-
-### Files
-
-Downloaded filenames:
-
-- `custom-devel.js`
-- `custom-devel.css`
-
-❗ **Important:**  
-After downloading, these files **must be renamed** to:
-
-```
-custom.js
-custom.css
+```text
+copy-paste/
 ```
 
-before copying them to the printer.
-
-### Additional feature
-
-- **Firmware Config button**  
-  Opens  
-  ```
-  /firmware-config/
-  ```
-  on the current Fluidd host
-
----
-
-## install.sh (common for both versions)
-
-- `install.sh`  
-  Copies `custom.css` and `custom.js` into `/home/lava/fluidd/`  
-  and patches `index.html` so Fluidd loads them.
-
-This step is required because the Fluidd directory is **recreated on every reboot**.
+Do not manually copy files from this folder unless you are intentionally doing an advanced manual installation.

@@ -6,8 +6,11 @@
 # - /etc/init.d/S99u1-ui-tweaks
 # - /home/lava/printer_data/misc/u1-ui-tweaks/* (custom.css/custom.js/install.sh)
 #
-# Prerequisite for persistence of /etc:
+# The installer enables persistence for /etc automatically:
 #   touch /oem/.debug
+
+mkdir -p /oem
+touch /oem/.debug
 
 mkdir -p /home/lava/printer_data/misc/u1-ui-tweaks
 
@@ -323,4 +326,6 @@ chmod +x /etc/init.d/S99u1-ui-tweaks
 echo ""
 echo "✅ Installed."
 echo "➡️ Reload Fluidd with: Ctrl + F5"
-echo "➡️ Reboot test: reboot"
+echo "➡️ Now reboot the printer to verify persistence:"
+echo "   Type: reboot"
+echo "   Then press Enter and confirm the reboot if asked."

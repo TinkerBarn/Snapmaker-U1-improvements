@@ -1,141 +1,174 @@
-# Snapmaker U1 improvements (Fluidd) – persistent UI tweaks
+# Snapmaker U1 improvements for Fluidd
 
-> **Reboot-safe UI modification for Snapmaker U1 (Fluidd)**  
-> Adds a **Chamber light toggle** and **Remote Display access** below the Cameras card  
-> and hides unused toolheads (T4–T31).
+This repository adds small but useful buttons and cleanup tweaks to the Fluidd web interface on the Snapmaker U1.
 
----
-
-## What this repository is about
-
-This repository provides a **persistent UI modification** for the **Snapmaker U1 running Fluidd**.
-
-It focuses on two goals:
-
-- **Easy installation for beginners** (one copy & paste via SSH)
-- **Full transparency for advanced users** (documented file system layout and source files)
-
-You do **not** need to understand the internal files to use this tweak.
+The goal is simple: Fluidd should be easier to use on the U1. You do not need to know Linux, Git, or Klipper internals to install the beginner version.
 
 ---
 
-## For beginners (recommended)
+## What changes after installation?
 
-If you just want the feature:
+Fluidd is the web interface you open in your browser to control the printer.
 
-- **Use the `copy-paste/` folder**
-- Copy **one single script**
-- Paste it into an SSH session
-- Done
+These tweaks can add:
 
-➡️ **No Git, no file copying, no manual editing required**
+- A **Chamber Light** button directly in Fluidd
+- A **Remote Screen** button that opens the printer screen in your browser
+- An optional **Firmware Config** button
+- An optional **Top Cover LED** button
+- A cleaner toolchanger area that shows only the useful U1 toolheads instead of many unused entries
 
-All required files are created automatically on the printer.
+The benefit: common controls are easier to find, and the Fluidd page looks less confusing.
 
-Detailed step-by-step instructions can be found here:
+---
+
+## Which version should I choose?
+
+There are three copy & paste installers. Choose only one.
+
+### Version A: Chamber Light + Remote Screen
+
+Installer file:
+
+```text
+chamber-light_remote-display
+```
+
+Choose this if you want the safest and simplest version.
+
+It adds:
+
+- Chamber Light button
+- Remote Screen button
+- Cleaner toolchanger view
+
+### Version B: Chamber Light + Remote Screen + Firmware Config
+
+Installer file:
+
+```text
+chamber-light_remote-display_firmware-config
+```
+
+Choose this if you also want a quick button to open the Paxx12 Firmware Config page.
+
+It adds everything from Version A plus:
+
+- Firmware Config button
+
+### Version C: Chamber Light + Top Cover LED + Remote Screen + Firmware Config
+
+Installer file:
+
+```text
+chamber-light_top-cover-light_remote-display_firmware-config
+```
+
+Choose this only if you also want to control an extra LED strip in a Top Cover.
+
+It adds everything from Version B plus:
+
+- Top Cover LED button
+
+Important hardware note:
+
+- A physical **Top Cover** should be installed.
+- You also need to build or install an **LED strip with a cable connection** to the rear upper connector on the printer.
+- Without this additional hardware, the Top Cover LED button is not useful.
+
+---
+
+## Required first: Paxx12 Extended Firmware
+
+These tweaks do **not** work with the original stock Snapmaker U1 firmware.
+
+Install the latest **Paxx12 Snapmaker U1 Extended Firmware** first:
+
+https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/releases/latest
+
+Paxx12 installation guide:
+
+https://snapmakeru1-extended-firmware.pages.dev/install
+
+After installing Paxx12, enable SSH as described in the Paxx12 documentation:
+
+https://snapmakeru1-extended-firmware.pages.dev/ssh_access
+
+---
+
+## What is SSH?
+
+SSH is a way to open a command window on the printer from your computer.
+
+You only need it to paste the installer text once.
+
+- On **Windows**, you can use a terminal or an SSH tool.
+- On **macOS**, you can use the Terminal app or another SSH tool.
+
+The exact SSH setup is documented by Paxx12:
+
+https://snapmakeru1-extended-firmware.pages.dev/ssh_access
+
+---
+
+## Beginner installation
+
+Use the instructions in:
+
 [copy-paste/README.md](https://github.com/TinkerBarn/Snapmaker-U1-improvements/blob/main/copy-paste)
 
+Short version:
 
----
+1. Install Paxx12 Extended Firmware.
+2. Enable SSH.
+3. Open an SSH connection to the printer.
+4. Open one installer file from the `copy-paste/` folder.
+5. Copy the complete text.
+6. Paste it into the SSH window and press Enter.
+7. Reload Fluidd with Ctrl + F5.
+8. Reboot the printer.
 
-## For advanced users / documentation 🔧
+You do not need Git. You do not need to copy files manually.
 
-The folder below documents **exactly which files are created on the printer** and **where they are stored**:
+Before a future firmware update, it is recommended to remove the `.debug` file and reboot the printer:
 
+```sh
+rm /oem/.debug
+reboot
 ```
-filesystem/
-```
 
-This folder mirrors the real Snapmaker U1 file system paths, for example:
-
-- `/etc/init.d/S99u1-ui-tweaks`
-- `/home/lava/printer_data/misc/u1-ui-tweaks/custom.js`
-- `/home/lava/printer_data/misc/u1-ui-tweaks/custom.css`
-
-➡️ These files are **automatically created** when you use the copy & paste installer.  
-➡️ Nothing inside `filesystem/` needs to be copied manually.
+After a successful firmware update, run the Copy & Paste installation once again.
 
 ---
 
-## ⚠️ Not stock firmware – prerequisites
+## Advanced documentation
 
-This tweak **does NOT work with the stock Snapmaker U1 firmware**.
+The folders `filesystem/` and `Fluidd/` are mainly for advanced users who want to inspect what the installer creates or change things manually.
 
-It requires the **Paxx12 Snapmaker U1 Extended Firmware**, which provides:
-
-- SSH access
-- Persistent storage
-- Remote Screen feature
-
-Documentation and downloads:
-https://github.com/paxx12/SnapmakerU1-Extended-Firmware
-
-Remote Screen feature:
-https://github.com/paxx12/SnapmakerU1-Extended-Firmware/blob/main/docs/remote_screen.md
-
----
-
-## What the tweak does
-
-**Variante A:**
-
-- **Toolchanger UI**
-  - Shows only **T0–T3**
-  - Hides unused toolheads **T4–T31**
-
-- **Cameras card**
-  - Adds **Chamber light** ON/OFF button  
-    (controls LED: `cavity_led`)
-  - Adds **Remote Display** button  
-    Opens: `http://<printer-ip>/screen/`
-
-- **Persistent**
-  - Survives reboots and power cycles
-  - Uses a late `init.d` boot hook
-
-  **Variante B:**
-
-- **All features from Variante A**
-  - Shows only **T0–T3**
-  - Hides unused toolheads **T4–T31**
-  - Adds **Chamber light** ON/OFF button  
-
-- **Additional in Cameras card**
-  - Adds **Firmware Config** gear icon
-    Opens: `http://<printer-ip>/firmare-config/`
-
- **Variante C:**
-
-- **All features from Variante B**
-  - Shows only **T0–T3**
-  - Hides unused toolheads **T4–T31**
-  - Adds **Chamber light** ON/OFF button
-  - Adds **Firmware Config** gear icon 
-
-- **Additional in Cameras card**
-  - Adds **Top Cover LED** ON/OFF button
-    **Note: Needs additional [changes in Fluidd](https://github.com/TinkerBarn/Snapmaker-U1-improvements/tree/main/Fluidd)**
-
----
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/H2H41XBKJ6)
+Beginners should use the `copy-paste/` installer instead.
 
 ---
 
 ## Screenshots
-- Standard fluidd view with 32 Tool heads
+
+Standard Fluidd view with many unused toolheads:
 
 ![Standard](screenshots/fluidd01.png)
 
-- Improved fluidd view with 4 Tool heads,
-Chamber light button and remote screen button under camera streams
+Improved Fluidd view with useful U1 controls:
 
-![Improved fliudd](screenshots/fluidd02.png)
+![Improved Fluidd](screenshots/fluidd02.png)
 
-- Remote screen in browser
+Remote screen in browser:
 
 ![Remote screen](screenshots/fluidd03.png)
 
 ---
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/H2H41XBKJ6)
+
+---
+
 ## License
+
 MIT

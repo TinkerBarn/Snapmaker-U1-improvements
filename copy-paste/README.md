@@ -1,113 +1,145 @@
-# Copy & Paste installer (Snapmaker U1)
+# Copy & Paste installer for Snapmaker U1
 
-⚠️ **NOT included in stock Snapmaker U1 firmware**
+This folder is for the beginner-friendly installation.
 
-This installer requires the **Paxx12 Snapmaker U1 Extended Firmware**.
+You choose one installer file, copy all of its text, paste it into an SSH window connected to the printer, and press Enter.
 
 ---
 
-## Copy & Paste installer for Chamber Light + Top Cover Light + Remote Screen + Firmware Config 
+## Before you start
 
-Choose the file with the buttons you'll add. See Variante A, B or C in the [main Readme](https://github.com/TinkerBarn/Snapmaker-U1-improvements/tree/main)
+These installers require **Paxx12 Snapmaker U1 Extended Firmware**.
 
-Adds up to **four buttons** to the Fluidd *Cameras* card:
+Install the latest Paxx12 release first:
 
-- **Chamber light** (bulb icon → LED ON/OFF)
-- **Top Cover light** (bulb icon → LED ON/OFF)
-- **Remote Screen** (screen icon → `/screen/`)
-- **Firmware Config** (gear icon → `/firmware-config/`)
+https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/releases/latest
 
-### Requirements
+Paxx12 installation guide:
 
-- **Paxx12 Snapmaker U1 Extended Firmware v1.1.0 or newer**
-- SSH access as `root`
+https://snapmakeru1-extended-firmware.pages.dev/install
 
-❌ This variant will **NOT work** on older firmware versions.
+After installing Paxx12, enable SSH:
 
-- **Top cover light needs changes in printer.cfg and additional gcode macros**
-- See description in Fluidd Readme
+https://snapmakeru1-extended-firmware.pages.dev/ssh_access
 
-### Installer file
+---
 
-```
+## What is SSH?
+
+SSH lets your computer open a command window on the printer.
+
+You need an SSH-capable tool:
+
+- Windows: use a terminal or an SSH tool.
+- macOS: use Terminal or another SSH tool.
+
+You only need SSH to paste the installer once.
+
+---
+
+## Choose one version
+
+### Version A: simple and safe
+
+File to copy:
+
+```text
 chamber-light_remote-display
+```
+
+Adds:
+
+- Chamber Light button
+- Remote Screen button
+- Cleaner toolchanger view
+
+Choose this if you are unsure.
+
+### Version B: with Firmware Config
+
+File to copy:
+
+```text
 chamber-light_remote-display_firmware-config
+```
+
+Adds everything from Version A plus:
+
+- Firmware Config button
+
+Choose this if you want a direct button for the Paxx12 Firmware Config page.
+
+### Version C: with Top Cover LED
+
+File to copy:
+
+```text
 chamber-light_top-cover-light_remote-display_firmware-config
 ```
 
----
+Adds everything from Version B plus:
 
-## What the installer does
+- Top Cover LED button
 
-The Copy & Paste script:
+Choose this only if you have the required Top Cover LED hardware.
 
-- Creates a persistent folder under  
-  `/home/lava/printer_data/misc/u1-ui-tweaks`
-- Installs:
-  - `custom.css`
-  - `custom.js`
-  - `install.sh`
-- Installs a boot-time script:
-  - `/etc/init.d/S99u1-ui-tweaks`
-- Automatically patches Fluidd after **every reboot**
+Important:
 
-All files created by this installer are documented under:
+- A Top Cover should be installed.
+- You need an LED strip.
+- The LED strip needs a cable connection to the rear upper connector on the printer.
 
-```
-filesystem/
-```
-
----
-
-## Prerequisites
-
-- Paxx12 Snapmaker U1 Extended Firmware  
-  https://github.com/paxx12/SnapmakerU1-Extended-Firmware
-- SSH access as `root`
-
----
-
-## Enable persistence for `/etc` (required)
-
-Run **once** before installing:
-
-```sh
-touch /oem/.debug
-```
-
-Documentation:  
-https://github.com/paxx12/SnapmakerU1-Extended-Firmware/blob/v1.0.0-paxx12-10/docs/data_persistence.md
+If you do not have this hardware, use Version A or B.
 
 ---
 
 ## Installation steps
 
-1. SSH into the Snapmaker U1 as `root`
-2. Open **one** of the installer files listed above
-3. Copy **the complete content**
-4. Paste it into the SSH session and press **Enter**
-5. Reload Fluidd: **Ctrl + F5**
-6. Power off / on the printer
+1. Install Paxx12 Extended Firmware.
+2. Enable SSH in Paxx12 Firmware Config.
+3. Open an SSH connection from your computer to the printer.
+4. Open one of the installer files listed above.
+5. Copy the complete content of that file.
+6. Paste it into the SSH window.
+7. Press Enter.
+8. Wait until the installer says it is finished.
+9. Reload Fluidd in your browser with Ctrl + F5.
+10. Reboot the printer.
 
-✅ After reboot, the changes should still be active.
+To reboot from the SSH window, type:
 
----
+```sh
+reboot
+```
 
-## ⚠️ Firmware upgrade warning
+Then press Enter. If the printer asks for confirmation, confirm the reboot.
 
-When `/oem/.debug` exists, changes to `/etc` are persistent.
+After the reboot, open Fluidd again and check that the new buttons are still visible.
 
-### BEFORE upgrading or flashing firmware:
+Before a future firmware update, it is recommended to remove the `.debug` file and reboot the printer:
 
 ```sh
 rm /oem/.debug
+reboot
 ```
 
-After a successful upgrade, you may enable persistence again:
+After a successful firmware update, run the Copy & Paste installation once again.
+
+---
+
+## Firmware update warning
+
+Before installing or flashing a new printer firmware version, remove the `.debug` file and reboot the printer:
 
 ```sh
-touch /oem/.debug
+rm /oem/.debug
+reboot
 ```
 
-Documentation:  
-https://github.com/paxx12/SnapmakerU1-Extended-Firmware/blob/v1.0.0-paxx12-10/docs/data_persistence.md
+After a successful firmware update, run the Copy & Paste installation once again.
+
+Also read the Paxx12 notes about data persistence:
+
+https://snapmakeru1-extended-firmware.pages.dev/data_persistence
+
+If you are unsure, check the Paxx12 documentation before updating firmware.
