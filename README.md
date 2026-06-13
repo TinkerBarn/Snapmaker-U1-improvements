@@ -6,6 +6,18 @@ The goal is simple: Fluidd should be easier to use on the U1. You do not need to
 
 ---
 
+## Use at your own risk
+
+These files and scripts are provided as a community project for people who want to modify their own Snapmaker U1.
+
+Running the installers changes files on your printer. Even though the process is designed to be simple, any modification of firmware-related files, printer configuration, SSH access, or connected hardware can carry risk.
+
+By using this repository, you agree that you do so entirely at your own risk. I cannot take responsibility for failed installations, lost settings, printer downtime, damaged hardware, warranty issues, firmware update problems, incorrect wiring, or any other direct or indirect consequences.
+
+Read the instructions first, make sure you understand which version you are installing, and only continue if you are comfortable making changes to your own printer.
+
+---
+
 ## What changes after installation?
 
 Fluidd is the web interface you open in your browser to control the printer.

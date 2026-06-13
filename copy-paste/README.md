@@ -6,6 +6,18 @@ You choose one installer file, copy all of its text, paste it into an SSH window
 
 ---
 
+## Use at your own risk
+
+The installer scripts modify files on your printer.
+
+They are provided as-is for users who want to customize their own Snapmaker U1. Running them is your own decision and your own responsibility.
+
+I cannot take responsibility for failed installations, lost settings, printer downtime, firmware update issues, warranty problems, hardware damage, wiring mistakes, or any other direct or indirect consequences.
+
+Before you paste a script into SSH, make sure you selected the correct version and understand what hardware is required. This is especially important for the Top Cover LED version, because it depends on additional LED hardware and wiring.
+
+---
+
 ## Before you start
 
 These installers require **Paxx12 Snapmaker U1 Extended Firmware**.
