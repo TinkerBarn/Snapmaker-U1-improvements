@@ -1,11 +1,71 @@
-/* IMPORTANT: Rename this file to custom.js and copy this file to /home/lava/printer_data/misc/u1-ui-tweaks */
-
 (function () {
   var LED_NAME = "cavity_led";
   var LED_LABEL = "Chamber light";
   var REMOTE_LABEL = "Remote Display";
   var FIRMWARE_LABEL = "Firmware Config";
-  var STATE_KEY = "u1_cavity_led_state";
+  var dragonBreathUrl = null;
+  var dragonBreathRequested = false;
+
+  function dragonBreathHost(text) {
+    var lines = text.split(/\r?\n/);
+    for (var i = 0; i < lines.length; i++) {
+      var match = lines[i].match(/^\s*host\s*:\s*([^#;]*)/i);
+      if (!match) continue;
+      var host = match[1].trim();
+      if (!host || /\s|\\/.test(host)) return null;
+      try {
+        var url = new URL(/^[a-z][a-z0-9+.-]*:/i.test(host) && host.indexOf("://") !== -1 ? host : "http://" + host);
+        if (!/^https?:$/.test(url.protocol) || !url.hostname || url.username || url.password) return null;
+        return "http://" + url.host;
+      } catch (error) {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  function refreshDragonBreath() {
+    if (dragonBreathRequested) return;
+    dragonBreathRequested = true;
+    fetch("/custom-dragonbreath-host.txt", {
+      credentials: "same-origin",
+      cache: "no-store"
+    }).then(function (response) {
+      if (!response.ok) throw new Error("DragonBreath config unavailable");
+      return response.text();
+    }).then(function (text) {
+      dragonBreathUrl = dragonBreathHost(text);
+    }).catch(function () {
+      dragonBreathUrl = null;
+    }).finally(function () {
+      inject();
+    });
+  }
+
+  function updateDragonBreathRow(content) {
+    var row = content.querySelector(".u1-dragonbreath-row");
+    if (!dragonBreathUrl) {
+      if (row) row.remove();
+      return;
+    }
+    if (row) return;
+    var remote = content.querySelector(".u1-remote-btn");
+    if (!remote) return;
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "u1-remote-btn";
+    button.title = "Open DragonBreath";
+    button.setAttribute("aria-label", "Open DragonBreath");
+    button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2C10 5 4 6 7 9M12 2C15 5 9 6 12 9M17 2C20 5 14 6 17 9"/><rect x="4" y="12" width="16" height="8" rx="1"/><path d="M8 14V18M12 14V18M16 14V18M6 20V22M18 20V22"/></g></svg>';
+    button.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      if (dragonBreathUrl) window.open(dragonBreathUrl, "_blank", "noopener,noreferrer");
+    });
+    row = buildRow("DragonBreath", button);
+    row.classList.add("u1-dragonbreath-row");
+    remote.closest(".u1-led-row").insertAdjacentElement("afterend", row);
+  }
 
   function sendGcode(script) {
     return fetch("/printer/gcode/script", {
@@ -13,6 +73,21 @@
       headers: { "Content-Type": "application/json" },
       credentials: "same-origin",
       body: JSON.stringify({ script: script })
+    }).then(function (response) {
+      if (!response.ok) throw new Error("G-code request failed");
+      return response;
+    });
+  }
+
+  function fetchPrinterObjects(objects) {
+    return fetch("/printer/objects/query?" + objects.map(function (o) {
+      return o;
+    }).join("&"), {
+      method: "GET",
+      credentials: "same-origin"
+    }).then(function (r) {
+      if (!r.ok) throw new Error("Status request failed");
+      return r.json();
     });
   }
 
@@ -71,28 +146,52 @@
   }
 
   function buildLedButton() {
-    var btn = document.createElement("div");
+    var btn = document.createElement("button");
+    btn.type = "button";
     btn.className = "u1-led-btn";
     btn.innerHTML = lampSvg();
+    btn.title = LED_LABEL;
+    btn.setAttribute("aria-label", LED_LABEL);
+    var busy = false;
 
-    var isOn = localStorage.getItem(STATE_KEY) === "1";
-
-    function update() {
-      btn.classList.toggle("is-on", isOn);
-      btn.classList.toggle("is-off", !isOn);
+    function readState() {
+      return fetchPrinterObjects([encodeURIComponent("led " + LED_NAME)]).then(function (data) {
+        var color = data.result.status["led " + LED_NAME].color_data[0];
+        var isOn = Number(color[3]) > 0;
+        btn.classList.toggle("is-on", isOn);
+        btn.classList.toggle("is-off", !isOn);
+        btn.setAttribute("aria-pressed", String(isOn));
+        btn.title = LED_LABEL + (isOn ? ": On" : ": Off");
+        return isOn;
+      });
     }
 
-    update();
+    function unavailable(error) {
+      btn.classList.remove("is-on", "is-off");
+      btn.removeAttribute("aria-pressed");
+      btn.title = LED_LABEL + ": Status unavailable";
+      console.warn("[u1-ui-tweaks] LED request failed", error);
+    }
 
-    btn.addEventListener("pointerdown", function (e) {
+    btn.refreshState = function () {
+      if (!busy) return readState().catch(unavailable);
+    };
+
+    btn.addEventListener("click", function (e) {
       e.preventDefault();
       e.stopPropagation();
-      isOn = !isOn;
-      localStorage.setItem(STATE_KEY, isOn ? "1" : "0");
-      update();
-      sendGcode("SET_LED LED=" + LED_NAME + " WHITE=" + (isOn ? 1 : 0));
-    }, true);
+      if (busy) return;
+      busy = true;
+      btn.disabled = true;
+      readState().then(function (isOn) {
+        return sendGcode("SET_LED LED=" + LED_NAME + " WHITE=" + (isOn ? 0 : 1) + " SYNC=0");
+      }).then(readState).catch(unavailable).finally(function () {
+        busy = false;
+        btn.disabled = false;
+      });
+    });
 
+    btn.refreshState();
     return btn;
   }
 
@@ -121,22 +220,30 @@
   }
 
   function inject() {
+    refreshDragonBreath();
     var card = findCamerasCard();
     if (!card) return;
 
     var content = card.querySelector("#card-content");
     if (!content) return;
 
-    if (content.querySelector(".u1-led-row")) return;
+    if (content.querySelector(".u1-led-row")) {
+      var existingLedBtn = content.querySelector(".u1-led-btn");
+      if (existingLedBtn && typeof existingLedBtn.refreshState === "function") {
+        existingLedBtn.refreshState();
+      }
+      updateDragonBreathRow(content);
+      return;
+    }
 
     var grid = content.querySelector(".row.ma-2.justify-space-around");
+
     var ledRow = buildRow(LED_LABEL, buildLedButton());
     var remoteRow = buildRow(REMOTE_LABEL, buildRemoteButton());
     var firmwareRow = buildRow(FIRMWARE_LABEL, buildFirmwareButton());
 
     if (grid) {
-      // insert in reverse order because each insertAdjacentElement("afterend", ...)
-      // inserts directly after 'grid'
+      // Reverse order because each "afterend" inserts directly after 'grid'
       grid.insertAdjacentElement("afterend", firmwareRow);
       grid.insertAdjacentElement("afterend", remoteRow);
       grid.insertAdjacentElement("afterend", ledRow);
@@ -145,7 +252,8 @@
       content.appendChild(remoteRow);
       content.appendChild(firmwareRow);
     }
-}
+    updateDragonBreathRow(content);
+  }
 
   window.addEventListener("load", function () {
     inject();

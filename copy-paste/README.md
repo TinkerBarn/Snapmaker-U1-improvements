@@ -51,7 +51,7 @@ You only need SSH to paste the installer once.
 
 ## Choose one version
 
-### Version A: simple and safe
+### Version A: basic controls
 
 File to copy:
 
@@ -89,9 +89,11 @@ File to copy:
 chamber-light_top-cover-light_remote-display_firmware-config
 ```
 
-Adds everything from Version B plus:
+Includes Remote Screen, Firmware Config and the cleaner toolchanger view. The light control is labeled:
 
 - Top Cover LED button
+
+This replaces the Chamber Light button and follows the printer's reported light state.
 
 Choose this only if you have the required Top Cover LED hardware.
 
@@ -103,19 +105,40 @@ Important:
 
 If you do not have this hardware, use Version A or B.
 
+If you have already changed `cavity_led` to PE15 and only want to update the buttons, copy the complete contents of [update-top-cover-ui](update-top-cover-ui) into an SSH session as root. Reload Fluidd afterwards (Windows: Ctrl + F5; Safari on macOS: Option + Cmd + R).
+
+---
+
+## Optional DragonBreath button
+
+All three versions include a DragonBreath heater icon below Remote Display, provided DragonBreath is configured.
+
+1. Open `http://<printer-address>/firmware-config/` in your browser.
+2. Enable DragonBreath in Paxx12 Firmware Config.
+3. Make sure `extended/klipper/dragonbreath.cfg` contains the DragonBreath IP address or DNS name under `host:`.
+4. Restart the printer or run your selected Copy & Paste installer again.
+
+For example, the host entry can be:
+
+```ini
+host: 192.168.1.50
+```
+
+Clicking the heater icon opens `http://192.168.1.50` in a new tab. Without a configured host, the entire DragonBreath row stays hidden. This button opens the heater's controls; it does not switch the heater on or off directly.
+
 ---
 
 ## Installation steps
 
 1. Install Paxx12 Extended Firmware.
 2. Enable SSH in Paxx12 Firmware Config.
-3. Open an SSH connection from your computer to the printer.
+3. Open an SSH connection from your computer to the printer as `root`, using the Paxx12 SSH instructions linked above.
 4. Open one of the installer files listed above.
 5. Copy the complete content of that file.
 6. Paste it into the SSH window.
 7. Press Enter.
 8. Wait until the installer says it is finished.
-9. Reload Fluidd in your browser with Ctrl + F5.
+9. Reload Fluidd in your browser (Windows: Ctrl + F5; Safari on macOS: Option + Cmd + R).
 10. Reboot the printer.
 
 To reboot from the SSH window, type:

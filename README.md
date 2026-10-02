@@ -28,6 +28,7 @@ These tweaks can add:
 - A **Remote Screen** button that opens the printer screen in your browser
 - An optional **Firmware Config** button
 - An optional **Top Cover LED** button
+- A **DragonBreath** heater icon when DragonBreath is enabled and configured
 - A cleaner toolchanger area that shows only the useful U1 toolheads instead of many unused entries
 
 The benefit: common controls are easier to find, and the Fluidd page looks less confusing.
@@ -46,7 +47,7 @@ Installer file:
 chamber-light_remote-display
 ```
 
-Choose this if you want the safest and simplest version.
+Choose this if you want the simplest version.
 
 It adds:
 
@@ -78,15 +79,35 @@ chamber-light_top-cover-light_remote-display_firmware-config
 
 Choose this only if you also want to control an extra LED strip in a Top Cover.
 
-It adds everything from Version B plus:
+It includes Remote Screen, Firmware Config and the cleaner toolchanger view. The light control is labeled:
 
 - Top Cover LED button
+
+This replaces the Chamber Light button. It controls the Top Cover LED through the same light control used by the printer display. The lamp icon follows the printer's reported state, including changes made from the display or console.
 
 Important hardware note:
 
 - A physical **Top Cover** should be installed.
 - You also need to build or install an **LED strip with a cable connection** to the rear upper connector on the printer.
 - Without this additional hardware, the Top Cover LED button is not useful.
+
+Version C redirects the printer's light control to the Top Cover LED. The original chamber light remains off. The display light switch also controls the Top Cover LED.
+
+---
+
+## DragonBreath in all three versions
+
+DragonBreath is an optional chamber heater. If you use it, a heater icon appears directly below Remote Display and opens its web interface in a new tab.
+
+First enable DragonBreath in Paxx12 Firmware Config at `http://<printer-address>/firmware-config/`. Then make sure `extended/klipper/dragonbreath.cfg` contains its IP address or DNS name under `host:`, for example:
+
+```ini
+host: dragonbreath.local
+```
+
+The button is available only when DragonBreath is enabled and this host is configured. Without the configuration, the DragonBreath row stays hidden.
+
+After enabling DragonBreath or changing its address, restart the printer or run your selected installer again. The configuration is checked during installation and printer startup.
 
 ---
 
@@ -137,7 +158,7 @@ Short version:
 4. Open one installer file from the `copy-paste/` folder.
 5. Copy the complete text.
 6. Paste it into the SSH window and press Enter.
-7. Reload Fluidd with Ctrl + F5.
+7. Reload Fluidd (Windows: Ctrl + F5; Safari on macOS: Option + Cmd + R).
 8. Reboot the printer.
 
 You do not need Git. You do not need to copy files manually.
@@ -158,6 +179,8 @@ After a successful firmware update, run the Copy & Paste installation once again
 The folders `filesystem/` and `Fluidd/` are mainly for advanced users who want to inspect what the installer creates or change things manually.
 
 Beginners should use the `copy-paste/` installer instead.
+
+Changes in this release are documented in [Release Notes](RELEASE_NOTES.md).
 
 ---
 

@@ -29,3 +29,5 @@ The folder mirrors printer paths such as:
 These paths exist on the printer, not on your normal computer.
 
 The Copy & Paste installer creates or updates the needed files automatically.
+
+`dragonbreath-config.sh` reads the optional DragonBreath host during installation and printer startup. Fluidd receives only a host snapshot, rather than repeatedly reading the printer configuration.

@@ -16,6 +16,12 @@ The installer stores the Fluidd UI tweaks in this printer folder:
 
 The files in this folder are used to add the buttons and small layout changes to Fluidd.
 
+- `custom.js` is the Version A UI.
+- `custom-devel.js` is the Version B UI.
+- `custom-top-cover.js` is the Version C UI.
+- Each installer writes its selected version to `custom.js` on the printer.
+- `dragonbreath-config.sh` captures the optional DragonBreath host during installation and printer startup.
+
 ---
 
 ## For normal installation

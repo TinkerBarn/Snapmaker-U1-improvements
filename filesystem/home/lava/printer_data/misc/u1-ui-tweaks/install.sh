@@ -23,6 +23,11 @@ fi
 cp "$CUSTOM_CSS_SRC" "$CUSTOM_CSS_DST"
 cp "$CUSTOM_JS_SRC" "$CUSTOM_JS_DST"
 
+# DragonBreath host snapshot (installation and printer startup).
+if [ -f "$PERSIST_DIR/dragonbreath-config.sh" ]; then
+  sh "$PERSIST_DIR/dragonbreath-config.sh"
+fi
+
 # inject custom.css and custom.js if missing
 grep -q 'href="\./custom\.css"' "$INDEX_HTML" ||   sed -i '/assets\/index-.*\.css/a\ \ \ \ <link rel="stylesheet" href="./custom.css">' "$INDEX_HTML"
 

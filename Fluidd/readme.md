@@ -27,3 +27,7 @@ For beginners, use Version C from the `copy-paste/` folder instead of editing th
 - `extended/ext_rfidmacros.cfg` contains optional RFID-related macros.
 
 These files are examples and references. The Copy & Paste installer creates the needed files on the printer automatically.
+
+Version C uses `led cavity_led` on PE15 for the Top Cover LED. The display light switch controls the same LED. Do not also configure `output_pin TOP_COVER_24V` on PE15.
+
+For DragonBreath, enable the heater in Paxx12 Firmware Config and configure its `host:` in `extended/klipper/dragonbreath.cfg`. The UI installers read that address during installation and printer startup.
