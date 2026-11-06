@@ -51,6 +51,8 @@ You only need SSH to paste the installer once.
 
 ## Choose one version
 
+All four versions include Filament Manager when Spoolman is configured, and DragonBreath when its host is configured.
+
 ### Version A: basic controls
 
 File to copy:
@@ -97,6 +99,10 @@ This replaces the Chamber Light button and follows the printer's reported light 
 
 Choose this only if you have the required Top Cover LED hardware.
 
+Versions C and D configure `printer.cfg` automatically: the existing `[led cavity_led]` uses `white_pin: PE15`, `cycle_time: 0.003333` and `initial_WHITE: 0`. The Purifier's PE15 enable line is commented out. Do not add another LED block or make these changes manually.
+
+Before changing `printer.cfg`, the installer saves a copy in the same folder, for example `printer-20261103_144208.cfg`. Repeat runs leave an already-correct file untouched. If the existing LED block is missing or duplicated, the installer stops without changing `printer.cfg`.
+
 Important:
 
 - A Top Cover should be installed.
@@ -109,9 +115,28 @@ If you have already changed `cavity_led` to PE15 and only want to update the but
 
 ---
 
+## Version D: RFID Reader and custom links
+
+Use [top-cover-led_remote-display_firmware-config_dashboard-links](top-cover-led_remote-display_firmware-config_dashboard-links) for the Top Cover LED controls from Version C plus optional RFID Reader and three custom links.
+
+Install this version before activating link sections in `extended/ext_dash_links.cfg`. Then follow [RFID and custom link setup](dashboard-links.md). A commented or active `[RFID Reader Link]` heading prevents the installer from adding or changing the example blocks.
+
+## Optional Filament Manager button
+
+The Filament Manager entry appears in every version only when `extended/extended2.cfg` contains:
+
+```ini
+[spoolman]
+host: http://192.168.178.144:7912
+```
+
+Use your own Spoolman URL. An empty or commented host does not enable the entry.
+
+The spool icon opens the printer's own `/filament/` page using the same DNS name or IP address as Fluidd.
+
 ## Optional DragonBreath button
 
-All three versions include a DragonBreath heater icon below Remote Display, provided DragonBreath is configured.
+All four versions include a DragonBreath heater icon below Remote Display, provided DragonBreath is configured.
 
 1. Open `http://<printer-address>/firmware-config/` in your browser.
 2. Enable DragonBreath in Paxx12 Firmware Config.
@@ -150,6 +175,8 @@ reboot
 Then press Enter. If the printer asks for confirmation, confirm the reboot.
 
 After the reboot, open Fluidd again and check that the new buttons are still visible.
+
+All optional links are checked directly from their configuration files whenever Fluidd loads: DragonBreath from `extended/klipper/dragonbreath.cfg`, Filament Manager from the `[spoolman]` section in `extended/extended2.cfg`, and RFID/custom links in Version D from `extended/ext_dash_links.cfg`. Save your changes and reload Fluidd to update or hide the entries; no reboot, Klipper restart or installer rerun is required. There is no periodic background check.
 
 Before a future firmware update, it is recommended to remove the `.debug` file and reboot the printer:
 

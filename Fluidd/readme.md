@@ -30,4 +30,8 @@ These files are examples and references. The Copy & Paste installer creates the 
 
 Version C uses `led cavity_led` on PE15 for the Top Cover LED. The display light switch controls the same LED. Do not also configure `output_pin TOP_COVER_24V` on PE15.
 
-For DragonBreath, enable the heater in Paxx12 Firmware Config and configure its `host:` in `extended/klipper/dragonbreath.cfg`. The UI installers read that address during installation and printer startup.
+For DragonBreath, enable the heater in Paxx12 Firmware Config and configure its `host:` in `extended/klipper/dragonbreath.cfg`. The UI reads that address whenever Fluidd loads. Filament Manager and RFID/custom links also update on page reload, without restarting Klipper or the printer.
+
+Versions C and D automatically adjust the existing LED block and the Purifier PE15 assignment in `printer.cfg` and add missing macro includes. Before changing that file, the installer creates a backup beside it named `printer-YYYYMMDD_HHMMSS.cfg`.
+
+Version D stores only RFID/custom-link settings in `extended/ext_dash_links.cfg`. Macros remain in `ext_printer.cfg`, which is included by Klipper. Never include the dashboard link file in Klipper. See [custom link setup](../copy-paste/dashboard-links.md).

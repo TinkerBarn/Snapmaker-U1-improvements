@@ -15,6 +15,10 @@
   display: none !important;
 }
 
+.u1-led-row .text-body-1 {
+  overflow-wrap: anywhere;
+}
+
 /* Shared row behavior */
 .u1-led-row,
 .u1-led-btn,

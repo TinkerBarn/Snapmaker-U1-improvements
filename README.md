@@ -29,6 +29,8 @@ These tweaks can add:
 - An optional **Firmware Config** button
 - An optional **Top Cover LED** button
 - A **DragonBreath** heater icon when DragonBreath is enabled and configured
+- A **Filament Manager** link when Spoolman is configured
+- Optional **RFID Reader** and three custom web links in Version D
 - A cleaner toolchanger area that shows only the useful U1 toolheads instead of many unused entries
 
 The benefit: common controls are easier to find, and the Fluidd page looks less confusing.
@@ -37,7 +39,7 @@ The benefit: common controls are easier to find, and the Fluidd page looks less 
 
 ## Which version should I choose?
 
-There are three copy & paste installers. Choose only one.
+There are four copy & paste installers. Choose only one.
 
 ### Version A: Chamber Light + Remote Screen
 
@@ -69,7 +71,7 @@ It adds everything from Version A plus:
 
 - Firmware Config button
 
-### Version C: Chamber Light + Top Cover LED + Remote Screen + Firmware Config
+### Version C: Top Cover LED + Remote Screen + Firmware Config
 
 Installer file:
 
@@ -95,7 +97,36 @@ Version C redirects the printer's light control to the Top Cover LED. The origin
 
 ---
 
-## DragonBreath in all three versions
+## Version D: Top Cover LED and custom links
+
+Installer: [top-cover-led_remote-display_firmware-config_dashboard-links](copy-paste/top-cover-led_remote-display_firmware-config_dashboard-links)
+
+Includes the Top Cover LED controls from Version C plus optional links to an external RFID reader and up to three websites of your choice. The RFID Reader button opens the external reader's web page; it does not read tags itself.
+
+Install Version D first, then configure your links in `extended/ext_dash_links.cfg`. The installer adds commented examples only if no `[RFID Reader Link]` heading already exists, whether commented or active. Existing entries are preserved.
+
+See [RFID and custom link setup](copy-paste/dashboard-links.md) for examples.
+
+### Highlights
+
+- **Your own dashboard shortcuts:** Version D offers an RFID Reader link and up to three named website links. Edit `extended/ext_dash_links.cfg`, save it and reload Fluidd.
+- **Dynamic visibility:** DragonBreath, Filament Manager, RFID Reader and custom links appear only when their configuration is active and valid. Changes take effect on page reload, without a Klipper restart or printer reboot. There is no periodic background check.
+- **Automatic Top Cover configuration:** Versions C and D update the existing LED block in `printer.cfg`, set `initial_WHITE: 0`, disable the Purifier PE15 enable assignment and add missing macro includes. Before any actual change, a backup such as `printer-20261103_144208.cfg` is created in the same folder.
+
+## Filament Manager in all versions
+
+If `extended/extended2.cfg` contains an active `[spoolman]` section with a URL under `host:`, a Filament Manager link appears with a spool icon:
+
+```ini
+[spoolman]
+host: http://192.168.178.144:7912
+```
+
+The button opens `/filament/` on your current printer address. For example, opening Fluidd at `http://u1.local` makes the link `http://u1.local/filament/`; using the printer's IP works the same way. It does not open the Spoolman server address directly.
+
+After configuring Spoolman, save the file and reload Fluidd. The Filament Manager entry is checked on each page load; no reboot or Klipper restart is required.
+
+## DragonBreath in all versions
 
 DragonBreath is an optional chamber heater. If you use it, a heater icon appears directly below Remote Display and opens its web interface in a new tab.
 
@@ -107,7 +138,7 @@ host: dragonbreath.local
 
 The button is available only when DragonBreath is enabled and this host is configured. Without the configuration, the DragonBreath row stays hidden.
 
-After enabling DragonBreath or changing its address, restart the printer or run your selected installer again. The configuration is checked during installation and printer startup.
+After enabling DragonBreath or changing its address, save the file and reload Fluidd. The configuration is checked on each page load; no reboot or Klipper restart is required.
 
 ---
 

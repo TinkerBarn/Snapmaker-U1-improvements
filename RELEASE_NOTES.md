@@ -1,5 +1,24 @@
 # Release notes
 
+## 2026-11-06 - Dynamic dashboard links and automatic Top Cover setup
+
+### Highlights
+
+- Personal dashboard shortcuts: Version D adds an external RFID Reader link and up to three named custom links. See the [short setup guide](copy-paste/dashboard-links.md).
+- Dynamic visibility for DragonBreath, Filament Manager, RFID Reader and custom links: save the relevant configuration file and reload Fluidd. No reboot or Klipper restart is needed for the link changes.
+- Versions C and D automatically configure the existing LED block with `white_pin: PE15`, `cycle_time: 0.003333` and `initial_WHITE: 0`, comment out the Purifier PE15 enable assignment and add missing macro includes. No second LED block is added.
+- Before every actual `printer.cfg` change, the original is saved in the same folder as `printer-YYYYMMDD_HHMMSS.cfg`, for example `printer-20261103_144208.cfg`. Failed backups prevent modification. Repeat runs leave an unchanged configuration untouched.
+
+### Details
+
+- All four installers show Filament Manager when an active `[spoolman]` section in `extended/extended2.cfg` has a valid HTTP or HTTPS host.
+- The Filament Manager spool icon opens `/filament/` on the current printer's origin.
+- New Version D extends Version C with an RFID/NFC shortcut for an external reader and up to three named web links.
+- Version D reads active RFID Reader Link and Dashboard Link1-3 sections from `extended/ext_dash_links.cfg`.
+- Commented examples are appended only when no commented or active RFID Reader Link heading exists. Existing source files and configured URLs are preserved on repeat installation.
+- Version D creates separate files for link metadata (`ext_dash_links.cfg`) and macros (`ext_printer.cfg`). First installation and repeat runs add missing entries without duplicating existing includes or replacing configured links.
+- All optional links are checked from their current configuration files on each Fluidd page load, without periodic polling. DragonBreath reads `extended/klipper/dragonbreath.cfg`, Filament Manager reads `[spoolman]` in `extended/extended2.cfg`, and RFID/custom links read `extended/ext_dash_links.cfg`. Save the file and reload Fluidd to enable, disable or update entries; no reboot or Klipper restart is required. Stale startup snapshots are no longer used.
+
 ## 2026-10-02 - DragonBreath and unified Top Cover LED control
 
 ### DragonBreath
@@ -8,8 +27,8 @@
 - A heater icon with curved heat lines opens the configured device's HTTP web interface in a new tab.
 - DragonBreath must be enabled in Paxx12 Firmware Config at `http://<printer-address>/firmware-config/`, with an IP address or DNS name under `host:` in `extended/klipper/dragonbreath.cfg`.
 - If the configuration file is missing or its host is empty or invalid, the DragonBreath row stays hidden.
-- The host is captured during installation and printer startup. There is no periodic configuration-file check in the browser.
-- After changing the host, restart the printer or run the selected installer again.
+- The host is read directly through Moonraker on each page load. There is no periodic configuration-file check in the browser.
+- After changing the host, save the file and reload Fluidd.
 
 ### Top Cover LED
 
@@ -29,13 +48,14 @@
 ### Validation
 
 - Automated checks cover LED status changes, toggling, failed requests, DragonBreath host snapshots, conditional visibility and link targets.
-- The unified Top Cover LED control and DragonBreath UI were tested by the maintainer on a printer. The updated startup snapshot behavior is covered by local automated tests; repeat the installation/startup test on the target printer.
+- The unified Top Cover LED control and DragonBreath UI were tested by the maintainer on a printer. Live configuration reads and conditional visibility are covered by local automated tests; the updated page-load behavior still needs testing on the target printer.
 
 ## 2026-06-13 - Beginner installation guide
 
 - Copy & Paste installers enable persistence by creating `/oem/.debug`.
 - The Top Cover installer creates Extended configuration files and updates `printer.cfg`.
-- Purifier handling supports both `enable_pin: PE15` and `power_enable_pin: PE15`.
+- Versions C and D automatically update the existing `[led cavity_led]` block to `white_pin: PE15`, `cycle_time: 0.003333` and `initial_WHITE: 0`, adding missing options without adding a second LED block. Purifier handling comments out active `enable_pin: PE15` and `power_enable_pin: PE15` only in `[purifier]`.
+- Before every actual change to `printer.cfg`, the installer saves its original contents beside it as `printer-YYYYMMDD_HHMMSS.cfg`. Backup failure prevents modification. Unchanged configurations are not rewritten or backed up again. A missing or duplicate `[led cavity_led]` block stops the patch without changing `printer.cfg`.
 - Beginner instructions explain the installation steps, hardware requirements and firmware-update preparation.
 - Installation output explains the reboot command.
 - Risk notices were added to the main README and Copy & Paste instructions.

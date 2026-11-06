@@ -3,6 +3,118 @@
   var LED_LABEL = "Top Cover LED";
   var REMOTE_LABEL = "Remote Display";
   var FIRMWARE_LABEL = "Firmware Config";
+  var CUSTOM_LINKS = false;
+  var dashboardLinks = [];
+  var dashboardLinksRequested = false;
+
+  function webUrl(value) {
+    if (!value || /[<>\\]/.test(value)) return null;
+    try {
+      var url = new URL(value);
+      if (!/^https?:$/.test(url.protocol) || !url.hostname || url.username || url.password) return null;
+      return url.href;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function parseDashboardLinks(text) {
+    var sections = Object.create(null);
+    var section = null;
+    text.split(/\r?\n/).forEach(function (line) {
+      if (/^\s*[#;]/.test(line)) {
+        if (/^\s*[#;]+\s*\[/.test(line)) section = null;
+        return;
+      }
+      var header = line.match(/^\s*\[([^\]]+)\]\s*(?:[#;].*)?$/);
+      if (header) {
+        section = header[1].trim();
+        sections[section] = Object.create(null);
+        return;
+      }
+      var field = line.match(/^\s*(Host|Name)\s*:\s*(.*?)\s*$/i);
+      if (field && section) sections[section][field[1].toLowerCase()] = field[2].replace(/\s+[#;].*$/, "").trim();
+    });
+    var links = [];
+    if (sections.spoolman && webUrl(sections.spoolman.host)) {
+      links.push({ id: "filament", name: "Filament Manager", url: window.location.origin + "/filament/", icon: "spool" });
+    }
+    if (CUSTOM_LINKS) {
+      ["RFID Reader Link", "Dashboard Link1", "Dashboard Link2", "Dashboard Link3"].forEach(function (name, index) {
+        var config = sections[name];
+        if (!config) return;
+        var url = webUrl(config.host);
+        var label = index === 0 ? "RFID Reader" : (config.name || "").trim();
+        if (url && label) links.push({ id: "custom-" + index, name: label, url: url, icon: index === 0 ? "rfid" : "web" });
+      });
+    }
+    return links;
+  }
+
+  function refreshDashboardLinks() {
+    if (dashboardLinksRequested) return;
+    dashboardLinksRequested = true;
+    function readLinks(url) {
+      return fetch(url, { credentials: "same-origin", cache: "no-store" })
+        .then(function (response) {
+          if (!response.ok) throw new Error("Dashboard link config unavailable");
+          return response.text();
+        }).then(parseDashboardLinks).catch(function () { return []; });
+    }
+    Promise.all([
+      readLinks("/server/files/config/extended/extended2.cfg"),
+      CUSTOM_LINKS ? readLinks("/server/files/config/extended/ext_dash_links.cfg") : Promise.resolve([])
+    ]).then(function (results) {
+      dashboardLinks = results[0].filter(function (link) { return link.id === "filament"; })
+        .concat(results[1].filter(function (link) { return link.id !== "filament"; }));
+    }).finally(inject);
+  }
+
+  function dashboardIcon(kind) {
+    var paths = {
+      rfid: '<rect x="3" y="5" width="10" height="14" rx="1"/><path d="M6 9H10M6 12H8M16 8Q20 12 16 16M19 5Q25 12 19 19"/>',
+      spool: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M9 4L11 9M15 4L13 9M4 9L9 11M4 15L9 13M9 20L11 15M15 20L13 15M20 9L15 11M20 15L15 13"/>',
+      web: '<circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12H21M5 7H19M5 17H19"/>'
+    };
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + paths[kind] + '</g></svg>';
+  }
+
+  function updateDashboardRows(content) {
+    var remote = content.querySelector(".u1-remote-btn");
+    if (!remote) return;
+    ["filament", "custom-0", "custom-1", "custom-2", "custom-3"].forEach(function (id) {
+      if (dashboardLinks.some(function (link) { return link.id === id; })) return;
+      var oldRow = content.querySelector(".u1-link-" + id);
+      if (oldRow) oldRow.remove();
+    });
+    var anchor = content.querySelector(".u1-dragonbreath-row") || remote.closest(".u1-led-row");
+    dashboardLinks.forEach(function (link) {
+      var row = content.querySelector(".u1-link-" + link.id);
+      var signature = JSON.stringify([link.name, link.url, link.icon]);
+      if (row && row.u1LinkSignature !== signature) {
+        row.remove();
+        row = null;
+      }
+      if (!row) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "u1-remote-btn";
+        button.title = link.name;
+        button.setAttribute("aria-label", link.name);
+        button.innerHTML = dashboardIcon(link.icon);
+        button.addEventListener("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          window.open(link.url, "_blank", "noopener,noreferrer");
+        });
+        row = buildRow(link.name, button);
+        row.classList.add("u1-link-" + link.id);
+        row.u1LinkSignature = signature;
+        anchor.insertAdjacentElement("afterend", row);
+      }
+      anchor = row;
+    });
+  }
   var dragonBreathUrl = null;
   var dragonBreathRequested = false;
 
@@ -27,7 +139,7 @@
   function refreshDragonBreath() {
     if (dragonBreathRequested) return;
     dragonBreathRequested = true;
-    fetch("/custom-dragonbreath-host.txt", {
+    fetch("/server/files/config/extended/klipper/dragonbreath.cfg", {
       credentials: "same-origin",
       cache: "no-store"
     }).then(function (response) {
@@ -221,6 +333,7 @@
 
   function inject() {
     refreshDragonBreath();
+    refreshDashboardLinks();
     var card = findCamerasCard();
     if (!card) return;
 
@@ -233,6 +346,7 @@
         existingLedBtn.refreshState();
       }
       updateDragonBreathRow(content);
+      updateDashboardRows(content);
       return;
     }
 
@@ -253,6 +367,7 @@
       content.appendChild(firmwareRow);
     }
     updateDragonBreathRow(content);
+    updateDashboardRows(content);
   }
 
   window.addEventListener("load", function () {

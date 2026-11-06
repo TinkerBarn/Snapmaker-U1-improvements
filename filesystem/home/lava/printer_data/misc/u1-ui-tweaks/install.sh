@@ -31,4 +31,8 @@ fi
 # inject custom.css and custom.js if missing
 grep -q 'href="\./custom\.css"' "$INDEX_HTML" ||   sed -i '/assets\/index-.*\.css/a\ \ \ \ <link rel="stylesheet" href="./custom.css">' "$INDEX_HTML"
 
-grep -q 'src="\./custom\.js"' "$INDEX_HTML" ||   sed -i '/href="\.\/custom\.css"/a\ \ \ \ <script src="./custom.js"></script>' "$INDEX_HTML"
+grep -q 'src="\./custom\.js[?"]' "$INDEX_HTML" ||   sed -i '/href="\.\/custom\.css"/a\ \ \ \ <script src="./custom.js"></script>' "$INDEX_HTML"
+
+# A content-specific URL prevents an older UI variant from staying cached.
+JS_VERSION=$(cksum "$CUSTOM_JS_DST" | awk '{print $1}')
+sed -i "s|src=\"\./custom\.js[^\"]*\"|src=\"./custom.js?v=$JS_VERSION\"|g" "$INDEX_HTML"

@@ -30,4 +30,6 @@ These paths exist on the printer, not on your normal computer.
 
 The Copy & Paste installer creates or updates the needed files automatically.
 
-`dragonbreath-config.sh` reads the optional DragonBreath host during installation and printer startup. Fluidd receives only a host snapshot, rather than repeatedly reading the printer configuration.
+The UI reads optional link settings directly through Moonraker on each page load: DragonBreath from `extended/klipper/dragonbreath.cfg`, Spoolman from `extended/extended2.cfg`, and Version D dashboard links from `extended/ext_dash_links.cfg`. Saving the file and reloading Fluidd is sufficient; no periodic configuration check runs in the browser. The legacy startup snapshots from `dragonbreath-config.sh` are no longer used by the UI.
+
+Version D stores link metadata in `extended/ext_dash_links.cfg` and macros in `extended/ext_printer.cfg`. Only the macro file is included by Klipper.

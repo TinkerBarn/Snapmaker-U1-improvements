@@ -19,8 +19,10 @@ The files in this folder are used to add the buttons and small layout changes to
 - `custom.js` is the Version A UI.
 - `custom-devel.js` is the Version B UI.
 - `custom-top-cover.js` is the Version C UI.
+- `custom-dashboard.js` is the Version D UI with RFID Reader and custom links.
 - Each installer writes its selected version to `custom.js` on the printer.
-- `dragonbreath-config.sh` captures the optional DragonBreath host during installation and printer startup.
+- All optional links are read from their current configuration files through Moonraker when Fluidd loads. Saving a configuration change and reloading Fluidd is sufficient; no Klipper restart or reboot is needed.
+- `dragonbreath-config.sh` still produces legacy startup snapshots, but the UI no longer uses these snapshots.
 
 ---
 
