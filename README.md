@@ -97,7 +97,7 @@ Version C redirects the printer's light control to the Top Cover LED. The origin
 
 ---
 
-## Version D: Top Cover LED and custom links
+## Version D: All from Version C and custom links
 
 Installer: [top-cover-led_remote-display_firmware-config_dashboard-links](copy-paste/top-cover-led_remote-display_firmware-config_dashboard-links)
 
